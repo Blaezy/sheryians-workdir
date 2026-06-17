@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #1e1e2e;
+  color: white;
+  font-family: "Open Sans", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 100px;
+}
+
+.todo-app {
+  width: min(500px,100%);
+  display: flex;
+  flex-direction: column;
+}
+.todo-app h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.task-input {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.input,.edit-input {
+  font-size: 16px;
+  padding: 6px;
+  flex: 1;
+  border: none;
+  border-radius: 4px;
+}
+.input:focus ,.edit-input:focus {
+  outline: none;
+}
+.submit-btn {
+  font-size: 14px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.task-card {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.task-name {
+  width: 70%;
+  font-size: 18px;
+  padding: 8px;
+}
+
+.edit-input{
+  margin-right: 30px;
+}
+
+.task-edit{
+  display: none;
+}
+
+.update-div {
+  display: flex;
+  gap: 6px;
+}
+.edit-btn,
+.delete-btn {
+  font-size: 14px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.submit-btn:hover {
+  background-color: #5239f1;
+}
+
+.edit-btn:hover {
+  background-color: #7c6af7;
+}
+.delete-btn:hover {
+  background-color: #e8724a;
+}
+
+button:active {
+  transform: scale(0.9);
+}
+
+@media (max-width: 800px) {
+  .todo-app {
+    margin: 0 10px;
+  }
+}

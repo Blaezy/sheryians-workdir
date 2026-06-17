@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User-card</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <form action="">
+      <h3 class="form-title">Add User</h3>
+      <input class="inp-name js-inp-name" type="text" placeholder="Enter your Name" />
+      <input class="inp-email js-inp-email" type="email" placeholder="Enter your Email" />
+      <input class="inp-url js-inp-url" type="url" placeholder="Enter Image URL" />
+      <button class="inp-btn js-inp-btn">Submit</button>
+    </form>
+
+    <div class="modal-overlay js-modal">
+      <form action="">
+        <h3 class="form-title">Edit User</h3>
+        <label>Name</label>
+        <input class="inp-name js-modal-name" type="text" placeholder="Enter your Name" />
+        <label>Email</label>
+        <input class="inp-email js-modal-email" type="email" placeholder="Enter your Email" />
+        <label>Image URL</label>
+        <input class="inp-url js-modal-url" type="url" placeholder="Enter Img Url" />
+        <button class="inp-btn js-modal-btn">Update</button>
+      </form>
+    </div>
+
+    <div class="all-user"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
