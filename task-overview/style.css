@@ -154,7 +154,6 @@ body {
   height: 16px;
 }
 
-
 /* MAIN */
 .main {
   max-width: 1200px;
@@ -238,6 +237,7 @@ body {
 
 /* FORM PANEL */
 .form-panel {
+  position: relative;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -311,6 +311,44 @@ body {
 .add-btn svg {
   width: 15px;
   height: 15px;
+}
+
+.modal-overlay {
+  display: none;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-overlay form {
+  padding: 30px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: clamp(280px, 40vw, 450px);
+}
+
+.close-modal {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--text);
 }
 
 /* TASKS PANEL */
@@ -537,6 +575,7 @@ body {
   display: flex;
   align-items: center;
   transition: background 0.12s;
+  position: relative;
 }
 .act-btn svg {
   width: 16px;
@@ -561,66 +600,45 @@ body {
   background: var(--green-light);
 }
 
-/* FILTERS */
-.filter-section {
+.act-btn::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%) translateY(5px);
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 18px 20px;
-  margin-bottom: 24px;
-  box-shadow: var(--shadow-card);
-}
-.filter-section h3 {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.filter-section h3 svg {
-  width: 16px;
-  height: 16px;
-  color: var(--muted);
-}
-.filter-row {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.filter-select {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 8px 12px;
-  font-size: 13px;
   color: var(--text);
-  background: var(--bg);
-  outline: none;
-  font-family: inherit;
-  cursor: pointer;
-  min-width: 150px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.2s;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
 }
-.clear-filter-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 8px 14px;
-  font-size: 13px;
-  color: var(--muted);
-  cursor: pointer;
-  font-family: inherit;
+
+.act-btn::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 4px);
+  transform: translateX(-50%) translateY(5px);
+  border: 6px solid transparent;
+  border-top-color: white;
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.2s;
+  pointer-events: none;
 }
-.clear-filter-btn svg {
-  width: 14px;
-  height: 14px;
-}
-.clear-filter-btn:hover {
-  color: var(--text);
-  border-color: var(--muted);
+
+.act-btn:hover::after,
+.act-btn:hover::before {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
 }
 
 /* BOTTOM 3-COL */
@@ -1004,7 +1022,9 @@ body {
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
+  white-space: nowrap;
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: center;
   gap: 7px;
@@ -1019,6 +1039,38 @@ body {
   width: 15px;
   height: 15px;
 }
+
+.keep-it{
+  border:1.5px solid var(--green);
+  color: var(--green);
+}
+.keep-it:hover{
+  background: var(--green-light);
+}
+
+.delete-opt-btn {
+  display: flex;
+  gap: 20px;
+}
+
+.delete-modal-overlay {
+  display: none;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.delete-modal-overlay.active{
+  display: flex;
+}
+
 
 /* FOOTER */
 .footer {
