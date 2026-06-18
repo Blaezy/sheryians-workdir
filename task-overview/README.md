@@ -8,11 +8,12 @@ A fully interactive Task Manager Application built with pure HTML, CSS, and Vani
 
 ## Screenshots
 
-### Dark Mode
-![Task Overview Dark Mode](./screenshots/dark.png)
-
 ### Light Mode
-![Task Overview Light Mode](./screenshots/light.png)
+![Task Overview Light Mode](./image/light.png)
+
+### Dark Mode
+![Task Overview Dark Mode](./image/dark.png)
+
 
 ---
 
