@@ -362,7 +362,8 @@ propCapture.addEventListener("click", () => {
 
 childBtn.addEventListener("click", () => {
   if (isDefaultPropBubble) {
-    infoNote.innerHTML = "Event Bubbling starts from the element that was clicked (Child) and moves upward through its parent elements until it reaches the top."
+    infoNote.innerHTML =
+      "Event Bubbling starts from the element that was clicked (Child) and moves upward through its parent elements until it reaches the top.";
     propCodeConsole.innerHTML = `<div class="console-box">
     <div class="console-label">Console Output</div>
     <div class="c-order">
@@ -377,7 +378,8 @@ childBtn.addEventListener("click", () => {
     </div>
     </div>`;
   } else {
-    infoNote.innerHTML = "Event Capturing starts from the outermost element (Grandparent) and travels downward through its children until it reaches the clicked element."
+    infoNote.innerHTML =
+      "Event Capturing starts from the outermost element (Grandparent) and travels downward through its children until it reaches the clicked element.";
     propCodeConsole.innerHTML = `<div class="console-box">
 <div class="console-label">Console Output</div>
             <div class="c-order" style="margin-top: 4px">
@@ -393,3 +395,27 @@ childBtn.addEventListener("click", () => {
              </div>`;
   }
 });
+
+// Theme Toggle
+
+const toggleTrack = document.querySelector(".js-toggle-track");
+const toggleThumb = document.querySelector(".js-toggle-thumb");
+const bottomToggleTrack = document.querySelector(".js-bottom-toggle-track");
+const bottomToggleThumb = document.querySelector(".js-bottom-toggle-thumb");
+const currentThemeText = document.querySelector(".js-current-theme");
+const body = document.body;
+
+let isDarkMode = false;
+
+function toggleTheme() {
+  isDarkMode = !isDarkMode;
+
+  toggleThumb.classList.toggle("active");
+  bottomToggleThumb.classList.toggle("active");
+  body.classList.toggle("dark-theme");
+
+  currentThemeText.innerHTML = isDarkMode ? "Dark" : "Light";
+}
+
+toggleTrack.addEventListener("click", toggleTheme);
+bottomToggleTrack.addEventListener("click", toggleTheme);
