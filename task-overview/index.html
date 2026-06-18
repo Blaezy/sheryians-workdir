@@ -27,7 +27,7 @@
           <circle cx="11" cy="11" r="8" />
           <path d="M21 21l-4.35-4.35" />
         </svg>
-        <input type="text" placeholder="Search tasks..." />
+        <input class="js-nav-search-tasks" type="text" placeholder="Search tasks..." />
         <kbd>⌘K</kbd>
       </div>
       <div class="nav-toggle-row">
@@ -170,21 +170,23 @@
                   <circle cx="11" cy="11" r="8" />
                   <path d="M21 21l-4.35-4.35" />
                 </svg>
-                <input type="text" placeholder="Search tasks..." />
+                <input class="js-search-tasks" type="text" placeholder="Search tasks..." />
               </div>
-              <select class="ctrl-select">
+              <select class="ctrl-select js-filter-category">
                 <option>Filter by Category</option>
                 <option>Development</option>
                 <option>Design</option>
                 <option>Study</option>
                 <option>Personal</option>
+                <option>Writing</option>
               </select>
-              <select class="ctrl-select">
+              <select class="ctrl-select js-filter-status">
                 <option>Filter by Status</option>
                 <option>Pending</option>
                 <option>In Progress</option>
                 <option>Completed</option>
               </select>
+              <button class="clear-filter js-clear-filter">Clear Filter</button>
             </div>
           </div>
 
@@ -337,9 +339,9 @@
             <div class="pipe-col">
               <div class="pipe-box pb-html">HTML</div>
               <div class="pipe-arr">↓</div>
-              <div class="pipe-box pb-step">Parsing</div>
+              <div class="pipe-box pb-html">Parsing</div>
               <div class="pipe-arr">↓</div>
-              <div class="pipe-box pb-step">Tokenization</div>
+              <div class="pipe-box pb-html">Tokenization</div>
               <div class="pipe-arr">↓</div>
               <div class="pipe-box pb-dom">DOM Tree</div>
             </div>
@@ -347,7 +349,7 @@
             <div class="pipe-col" style="padding-top: 48px">
               <div class="pipe-box pb-css">CSS</div>
               <div class="pipe-arr">↓</div>
-              <div class="pipe-box pb-step">Parsing</div>
+              <div class="pipe-box pb-css">Parsing</div>
               <div class="pipe-arr">↓</div>
               <div class="pipe-box pb-cssom">CSSOM Tree</div>
             </div>

@@ -11,13 +11,29 @@ const completedTasks = document.querySelector(".js-completed-tasks");
 const inprogressTasks = document.querySelector(".js-inprogress-tasks");
 
 let tasks = [
-  { name: "Build Portfolio Website", category: "Development", status: "In Progress" },
-  { name: "Design New Logo", category: "Design", status: "Pending" },
-  { name: "Study JavaScript Advanced", category: "Study", status: "Completed" },
-  { name: "Buy Groceries", category: "Personal", status: "Pending" },
-  { name: "Fix Navbar Bug", category: "Development", status: "In Progress" },
-  { name: "Write Project Documentation", category: "Writing", status: "Completed" },
+  {
+    id: "ff70f10e-e0b4-42bd-9d10-40832cc9da49",
+    name: "Build Portfolio Website",
+    category: "Development",
+    status: "In Progress",
+  },
+  { id: "31220810-9fc2-4e0d-8fa7-8b785e8ed7ec", name: "Design New Logo", category: "Design", status: "Pending" },
+  {
+    id: "cc81f4cb-cc04-4d3d-91be-eaef90db418f",
+    name: "Study JavaScript Advanced",
+    category: "Study",
+    status: "Completed",
+  },
+  { id: "6e87215f-7871-4edc-9e23-baa9341c6d49", name: "Buy Groceries", category: "Personal", status: "Pending" },
+  {
+    id: "a2e4492f-8536-480a-a34c-28418ef9bfc2",
+    name: "Write Project Documentation",
+    category: "Writing",
+    status: "Completed",
+  },
 ];
+
+let result = [];
 
 const taskIcons = {
   Development: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -47,7 +63,7 @@ const taskIcons = {
                   </svg>`,
 };
 
-function renderTask() {
+function renderTask(tasks) {
   taskGrid.innerHTML = "";
   tasks.forEach((task, index) => {
     let taskHTML = `<div class="task-card">
@@ -62,13 +78,13 @@ function renderTask() {
                 <span class="status-dot ${task.status.toLowerCase().replace(/\s/g, "")}">${task.status}</span>
               </div>
               <div class="task-actions">
-                <button class="act-btn edit" onClick="editTask(${index})" data-tooltip="Edit">
+                <button class="act-btn edit" onClick="editTask('${task.id}')" data-tooltip="Edit">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
                     <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
                   </svg>
                 </button>
-                <button class="act-btn del" onClick="deleteTask(${index})" data-tooltip="Delete">
+                <button class="act-btn del" onClick="deleteTask('${task.id}')" data-tooltip="Delete">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="3 6 5 6 21 6" />
                     <path d="M19 6l-1 14H6L5 6" />
@@ -76,7 +92,7 @@ function renderTask() {
                     <path d="M9 6V4h6v2" />
                   </svg>
                 </button>
-                <button class="act-btn done" onClick="completeTask(${index})" data-tooltip="Complete">
+                <button class="act-btn done" onClick="completeTask('${task.id}')" data-tooltip="Complete">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
                     <polyline points="22 4 12 14.01 9 11.01" />
@@ -87,24 +103,27 @@ function renderTask() {
     taskGrid.innerHTML += taskHTML;
   });
 }
-renderTask();
+renderTask(tasks);
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
+  let id = crypto.randomUUID();
   let name = taskInput.value;
   let category = categoryInput.value;
   let status = statusInput.value;
 
   if (name.trim() === "" || category === "" || status === "") return;
-  else tasks.push({ name, category, status });
+  else tasks.push({ id, name, category, status });
 
-  console.log(tasks);
-  renderTask();
+  if (result) {
+    result = searchFilter(tasks);
+    result = categoryFilter(result);
+    result = statusFilter(result);
+    renderTask(result);
+  } else renderTask(tasks);
   updateStats();
   form.reset();
 });
-
-// edit, delete and complete Button 
 
 function updateStats() {
   totalTasks.innerHTML = tasks.length;
@@ -120,6 +139,8 @@ function updateStats() {
 }
 updateStats();
 
+// edit, delete and complete Button
+
 const modal = document.querySelector(".js-modal");
 const closeModal = document.querySelector(".js-close-modal");
 
@@ -128,25 +149,34 @@ const modalCategory = document.querySelector(".js-modal-category");
 const modalStatus = document.querySelector(".js-modal-status");
 
 let editIndex = -1;
-function editTask(index) {
-  modalTask.value = tasks[index].name;
-  modalCategory.value = tasks[index].category;
-  modalStatus.value = tasks[index].status;
-  editIndex = index;
+function editTask(id) {
+  let taskObj = tasks.find((val) => val.id === id);
+  let taskIndex = tasks.findIndex((val) => val.id === id);
+
+  modalTask.value = taskObj.name;
+  modalCategory.value = taskObj.category;
+  modalStatus.value = taskObj.status;
+  editIndex = taskIndex;
 
   modal.classList.add("active");
 }
 
 modal.addEventListener("submit", (e) => {
   e.preventDefault();
+  const id = tasks[editIndex].id;
   let name = modalTask.value;
   let category = modalCategory.value;
   let status = modalStatus.value;
 
-  tasks[editIndex] = { name, category, status };
+  tasks[editIndex] = { id, name, category, status };
   editIndex = -1;
   modal.classList.remove("active");
-  renderTask();
+  if (result) {
+    result = searchFilter(tasks);
+    result = categoryFilter(result);
+    result = statusFilter(result);
+    renderTask(result);
+  } else renderTask(tasks);
   updateStats();
 });
 
@@ -154,23 +184,39 @@ closeModal.addEventListener("click", () => {
   modal.classList.remove("active");
 });
 
-function deleteTask(index) {
-  tasks.splice(index, 1);
-  renderTask();
+function deleteTask(id) {
+  let taskObj = tasks.find((val) => val.id === id);
+  let taskIndex = tasks.findIndex((val) => val.id === id);
+
+  tasks.splice(taskIndex, 1);
+  if (result) {
+    result = searchFilter(tasks);
+    result = categoryFilter(result);
+    result = statusFilter(result);
+    renderTask(result);
+  } else renderTask(tasks);
   updateStats();
 }
 
-function completeTask(index) {
-  if (tasks[index].status === "Completed") {
+function completeTask(id) {
+  let taskObj = tasks.find((val) => val.id === id);
+  let taskIndex = tasks.findIndex((val) => val.id === id);
+
+  if (tasks[taskIndex].status === "Completed") {
     return;
   } else {
-    tasks[index].status = "Completed";
-    renderTask();
+    tasks[taskIndex].status = "Completed";
+    if (result) {
+      result = searchFilter(tasks);
+      result = categoryFilter(result);
+      result = statusFilter(result);
+      renderTask(result);
+    } else renderTask(tasks);
     updateStats();
   }
 }
 
-// deleting all task 
+// deleting all task
 const deleteModal = document.querySelector(".delete-modal-overlay");
 const clearAllTaskBtn = document.querySelector(".js-clear-all-btn");
 
@@ -188,6 +234,81 @@ keepIt.addEventListener("click", () => {
 deleteAnyway.addEventListener("click", () => {
   tasks = [];
   deleteModal.classList.remove("active");
-  renderTask();
+  if (result) {
+    result = searchFilter(tasks);
+    result = categoryFilter(result);
+    result = statusFilter(result);
+    renderTask(result);
+  } else renderTask(tasks);
   updateStats();
+});
+
+// filtering and searching
+
+const navSearch = document.querySelector(".js-nav-search-tasks");
+const filterSearch = document.querySelector(".js-search-tasks");
+const filterCategory = document.querySelector(".js-filter-category");
+const filterStatus = document.querySelector(".js-filter-status");
+
+navSearch.addEventListener("keyup", () => {
+  if (navSearch.value === "") renderTask(tasks);
+  else {
+    const result = tasks.filter((obj) =>
+      Object.values(obj).some((value) => String(value).toLowerCase().includes(navSearch.value.trim())),
+    );
+
+    renderTask(result);
+  }
+});
+
+function searchFilter(result) {
+  if (filterSearch.value === "") return result;
+  else {
+    return tasks.filter((obj) =>
+      Object.values(obj).some((value) => String(value).toLowerCase().includes(filterSearch.value.trim())),
+    );
+  }
+}
+function categoryFilter(result) {
+  if (filterCategory.value === "Filter by Category") return result;
+  else {
+    return result.filter((elem) => elem.category === filterCategory.value);
+  }
+}
+function statusFilter(result) {
+  if (filterStatus.value === "Filter by Status") return result;
+  else {
+    return result.filter((elem) => elem.status === filterStatus.value);
+  }
+}
+
+filterSearch.addEventListener("keyup", () => {
+  result = searchFilter(tasks);
+  result = categoryFilter(result);
+  result = statusFilter(result);
+  renderTask(result);
+});
+
+filterCategory.addEventListener("change", () => {
+  result = searchFilter(tasks);
+  result = categoryFilter(result);
+  result = statusFilter(result);
+  renderTask(result);
+});
+filterStatus.addEventListener("change", () => {
+  result = searchFilter(tasks);
+  result = categoryFilter(result);
+  result = statusFilter(result);
+  renderTask(result);
+});
+
+const clearFilter = document.querySelector(".js-clear-filter");
+
+clearFilter.addEventListener("click", () => {
+  navSearch.value = "";
+  filterSearch.value = "";
+  filterCategory.value = "Filter by Category";
+  filterStatus.value = "Filter by Status";
+  result = [];
+  renderTask(tasks);
 });
