@@ -10,28 +10,11 @@ const pendingTasks = document.querySelector(".js-pending-tasks");
 const completedTasks = document.querySelector(".js-completed-tasks");
 const inprogressTasks = document.querySelector(".js-inprogress-tasks");
 
-let tasks = [
-  {
-    id: "ff70f10e-e0b4-42bd-9d10-40832cc9da49",
-    name: "Build Portfolio Website",
-    category: "Development",
-    status: "In Progress",
-  },
-  { id: "31220810-9fc2-4e0d-8fa7-8b785e8ed7ec", name: "Design New Logo", category: "Design", status: "Pending" },
-  {
-    id: "cc81f4cb-cc04-4d3d-91be-eaef90db418f",
-    name: "Study JavaScript Advanced",
-    category: "Study",
-    status: "Completed",
-  },
-  { id: "6e87215f-7871-4edc-9e23-baa9341c6d49", name: "Buy Groceries", category: "Personal", status: "Pending" },
-  {
-    id: "a2e4492f-8536-480a-a34c-28418ef9bfc2",
-    name: "Write Project Documentation",
-    category: "Writing",
-    status: "Completed",
-  },
-];
+const savedTheme = document.querySelector(".js-saved-theme");
+const savedTasks = document.querySelector(".js-saved-tasks");
+
+
+let tasks = JSON.parse(localStorage.getItem("task")) || [];
 
 let result = [];
 
@@ -104,6 +87,8 @@ function renderTask(tasks) {
   });
 }
 renderTask(tasks);
+localStorage.setItem("task", JSON.stringify(tasks));
+savedTasks.innerHTML = `${JSON.parse(localStorage.getItem("task")).length} tasks`;
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -122,6 +107,8 @@ form.addEventListener("submit", (e) => {
     renderTask(result);
   } else renderTask(tasks);
   updateStats();
+  localStorage.setItem("task", JSON.stringify(tasks));
+  savedTasks.innerHTML = `${JSON.parse(localStorage.getItem("task")).length} tasks`;
   form.reset();
 });
 
@@ -178,6 +165,8 @@ modal.addEventListener("submit", (e) => {
     renderTask(result);
   } else renderTask(tasks);
   updateStats();
+  localStorage.setItem("task", JSON.stringify(tasks));
+  savedTasks.innerHTML = `${JSON.parse(localStorage.getItem("task")).length} tasks`;
 });
 
 closeModal.addEventListener("click", () => {
@@ -196,6 +185,8 @@ function deleteTask(id) {
     renderTask(result);
   } else renderTask(tasks);
   updateStats();
+  localStorage.setItem("task", JSON.stringify(tasks));
+  savedTasks.innerHTML = `${JSON.parse(localStorage.getItem("task")).length} tasks`;
 }
 
 function completeTask(id) {
@@ -213,6 +204,8 @@ function completeTask(id) {
       renderTask(result);
     } else renderTask(tasks);
     updateStats();
+    localStorage.setItem("task", JSON.stringify(tasks));
+    savedTasks.innerHTML = `${JSON.parse(localStorage.getItem("task")).length} tasks`;
   }
 }
 
@@ -241,6 +234,8 @@ deleteAnyway.addEventListener("click", () => {
     renderTask(result);
   } else renderTask(tasks);
   updateStats();
+  localStorage.setItem("task", JSON.stringify(tasks));
+  savedTasks.innerHTML = `${JSON.parse(localStorage.getItem("task")).length} tasks`;
 });
 
 // filtering and searching
@@ -405,7 +400,15 @@ const bottomToggleThumb = document.querySelector(".js-bottom-toggle-thumb");
 const currentThemeText = document.querySelector(".js-current-theme");
 const body = document.body;
 
-let isDarkMode = false;
+let isDarkMode = localStorage.getItem("theme") === "Dark" ? true : false;
+
+if (isDarkMode) {
+  toggleThumb.classList.add("active");
+  bottomToggleThumb.classList.add("active");
+  body.classList.add("dark-theme");
+  currentThemeText.innerHTML = "Dark";
+  savedTheme.innerHTML = localStorage.getItem("theme");
+}
 
 function toggleTheme() {
   isDarkMode = !isDarkMode;
@@ -414,7 +417,14 @@ function toggleTheme() {
   bottomToggleThumb.classList.toggle("active");
   body.classList.toggle("dark-theme");
 
-  currentThemeText.innerHTML = isDarkMode ? "Dark" : "Light";
+  if (isDarkMode) {
+    currentThemeText.innerHTML = "Dark";
+    localStorage.setItem("theme", "Dark");
+  } else {
+    currentThemeText.innerHTML = "Light";
+    localStorage.setItem("theme", "Light");
+  }
+  savedTheme.innerHTML = localStorage.getItem("theme");
 }
 
 toggleTrack.addEventListener("click", toggleTheme);
