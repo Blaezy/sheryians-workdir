@@ -312,3 +312,84 @@ clearFilter.addEventListener("click", () => {
   result = [];
   renderTask(tasks);
 });
+
+// Attributes vs Properties Demo
+
+const attrInput = document.querySelector(".js-attr-input");
+const showDiffBtn = document.querySelector(".js-show-diff-btn");
+const diffConsole = document.querySelector(".js-diff-code-console");
+
+showDiffBtn.addEventListener("click", () => {
+  diffConsole.innerHTML = `<div class="code-block">
+            <div class="console-label">Console Output</div>
+            <div><span class="code-key">input.value</span></div>
+            <div><span class="code-val">${attrInput.value}</span></div>
+            <br />
+            <div><span class="code-key">input.getAttribute("value")</span></div>
+            <div><span class="code-val">Hello World</span></div>
+          </div>
+          <div class="info-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
+            input.value returns the current value property, while getAttribute("value") returns the initial HTML
+            attribute value.
+          </div>`;
+});
+
+// Event Propagation Demo
+
+const childBtn = document.querySelector(".js-child-btn");
+const propBubble = document.querySelector(".js-prop-bubble");
+const propCapture = document.querySelector(".js-prop-capture");
+const infoNote = document.querySelector(".js-info-note");
+const propCodeConsole = document.querySelector(".js-prop-code-console");
+
+let isDefaultPropBubble = true;
+
+propBubble.addEventListener("click", () => {
+  propBubble.classList.add("active");
+  isDefaultPropBubble = true;
+  propCapture.classList.remove("active");
+});
+propCapture.addEventListener("click", () => {
+  propCapture.classList.add("active");
+  isDefaultPropBubble = false;
+  propBubble.classList.remove("active");
+});
+
+childBtn.addEventListener("click", () => {
+  if (isDefaultPropBubble) {
+    infoNote.innerHTML = "Event Bubbling starts from the element that was clicked (Child) and moves upward through its parent elements until it reaches the top."
+    propCodeConsole.innerHTML = `<div class="console-box">
+    <div class="console-label">Console Output</div>
+    <div class="c-order">
+    <span style="color: var(--muted); font-size: 10px">Bubbling Order:</span>
+    </div>
+    <div class="c-order">
+    <span class="c-child">Child</span>
+    <span class="c-arr">→</span>
+    <span class="c-parent">Parent</span>
+    <span class="c-arr">→</span>
+    <span class="c-gp">Grandparent</span>
+    </div>
+    </div>`;
+  } else {
+    infoNote.innerHTML = "Event Capturing starts from the outermost element (Grandparent) and travels downward through its children until it reaches the clicked element."
+    propCodeConsole.innerHTML = `<div class="console-box">
+<div class="console-label">Console Output</div>
+            <div class="c-order" style="margin-top: 4px">
+              <span style="color: var(--muted); font-size: 10px">Capturing Order:</span>
+            </div>
+            <div class="c-order">
+              <span class="c-gp">Grandparent</span>
+              <span class="c-arr">→</span>
+              <span class="c-parent">Parent</span>
+              <span class="c-arr">→</span>
+              <span class="c-child">Child</span>
+            </div>
+             </div>`;
+  }
+});

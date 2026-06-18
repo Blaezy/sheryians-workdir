@@ -254,25 +254,10 @@
           <p class="sub">See the difference between input.value and getAttribute("value")</p>
           <div class="attr-input-wrap">
             <label>Input Field</label>
-            <input class="attr-input" type="text" value="Hello World" />
+            <input class="attr-input js-attr-input" type="text" value="Hello World" />
           </div>
-          <button class="show-diff-btn">Show Difference</button>
-          <div class="code-block">
-            <div><span class="code-key">input.value</span></div>
-            <div><span class="code-val">Hello World</span></div>
-            <br />
-            <div><span class="code-key">input.getAttribute("value")</span></div>
-            <div><span class="code-val">Hello World</span></div>
-          </div>
-          <div class="info-note">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="16" x2="12" y2="12" />
-              <line x1="12" y1="8" x2="12.01" y2="8" />
-            </svg>
-            input.value returns the current value property, while getAttribute("value") returns the initial HTML
-            attribute value.
-          </div>
+          <button class="show-diff-btn js-show-diff-btn">Show Difference</button>
+          <div class="js-diff-code-console"></div>
         </div>
 
         <!-- Event Prop Demo -->
@@ -291,37 +276,23 @@
             <div class="prop-box prop-parent">
               <div class="box-label">Parent</div>
               <div class="box-sub">(Capture / Bubble)</div>
-              <button class="child-btn">
+              <button class="child-btn js-child-btn">
                 Child Button<br /><span style="font-size: 10px; font-weight: 400">(Click Me)</span>
               </button>
             </div>
           </div>
           <div class="prop-btns">
-            <button class="prop-btn bubble">Start Bubbling</button>
-            <button class="prop-btn capture">Start Capturing</button>
+            <button class="prop-btn bubble js-prop-bubble active">Start Bubbling</button>
+            <button class="prop-btn capture js-prop-capture">Start Capturing</button>
           </div>
-          <div class="console-box">
-            <div class="console-label">Console Output</div>
-            <div class="c-order">
-              <span style="color: var(--muted); font-size: 10px">Bubbling Order:</span>
-            </div>
-            <div class="c-order">
-              <span class="c-child">Child</span>
-              <span class="c-arr">→</span>
-              <span class="c-parent">Parent</span>
-              <span class="c-arr">→</span>
-              <span class="c-gp">Grandparent</span>
-            </div>
-            <div class="c-order" style="margin-top: 4px">
-              <span style="color: var(--muted); font-size: 10px">Capturing Order:</span>
-            </div>
-            <div class="c-order">
-              <span class="c-gp">Grandparent</span>
-              <span class="c-arr">→</span>
-              <span class="c-parent">Parent</span>
-              <span class="c-arr">→</span>
-              <span class="c-child">Child</span>
-            </div>
+          <div class="js-prop-code-console"></div>
+          <div class="info-note" style="margin-top: 10px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
+            <span class="js-info-note">Select a mode, then Click the Child Button </span>
           </div>
         </div>
 
