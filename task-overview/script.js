@@ -13,6 +13,13 @@ const inprogressTasks = document.querySelector(".js-inprogress-tasks");
 const savedTheme = document.querySelector(".js-saved-theme");
 const savedTasks = document.querySelector(".js-saved-tasks");
 
+function generateId() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0
+    const v = c === 'x' ? r : (r & 0x3 | 0x8)
+    return v.toString(16)
+  })
+}
 
 let tasks = JSON.parse(localStorage.getItem("task")) || [];
 
@@ -92,10 +99,10 @@ savedTasks.innerHTML = `${JSON.parse(localStorage.getItem("task")).length} tasks
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  let id = crypto.randomUUID();
+  let id = generateId();
   let name = taskInput.value;
   let category = categoryInput.value;
-  let status = statusInput.value;
+  let status = "Pending";
 
   if (name.trim() === "" || category === "" || status === "") return;
   else tasks.push({ id, name, category, status });
