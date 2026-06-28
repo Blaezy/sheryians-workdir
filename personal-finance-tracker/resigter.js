@@ -12,6 +12,7 @@ registerBtn.addEventListener("click", (e) => {
   if (!existUser(registerUsername.value.trim())) {
     let newUser = {
       username: `${registerUsername.value.trim()}`,
+      fullname: `${registerUsername.value.trim()}`,
       password: `${registerPassword.value}`,
       currency: "$",
     };

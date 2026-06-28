@@ -73,11 +73,10 @@ closeModalBtn.addEventListener("click", () => {
 // here are the navbar element
 
 const navbarUsername = document.querySelector(".user-name");
-navbarUsername.textContent = `${user.username}`;
+navbarUsername.textContent = `${user.fullname}`;
 
 const logoutBtn = document.querySelector(".logout-btn");
 logoutBtn.addEventListener("click", () => {
-  console.log("logouting user...");
   localStorage.removeItem("user");
   window.location.replace("login.html");
 });
@@ -88,7 +87,7 @@ let key = `transaction_${user.username}`;
 
 let data = JSON.parse(localStorage.getItem(key)) || [];
 
-renderAllTransactions();
+renderAllTransactions(data);
 
 // taking input all the transaction data
 
@@ -127,7 +126,7 @@ saveBtn.addEventListener("click", (e) => {
     localStorage.setItem(`${key}`, JSON.stringify(data));
     updateCards();
     renderCards();
-    renderAllTransactions();
+    renderAllTransactions(data);
     formHeader.innerHTML = "Add Transaction";
     editIndex = -1;
   } else {
@@ -135,7 +134,7 @@ saveBtn.addEventListener("click", (e) => {
     localStorage.setItem(`${key}`, JSON.stringify(data));
     updateCards();
     renderCards();
-    renderAllTransactions();
+    renderAllTransactions(data);
   }
 
   transactionForm.reset();
@@ -187,10 +186,10 @@ renderCards();
 
 // renderning all transactions
 
-function renderAllTransactions() {
+function renderAllTransactions(renderData) {
   allTransactionsHTML.innerHTML = "";
   allTransactionsHTMLSecond.innerHTML = "";
-  data.forEach((elem) => {
+  renderData.forEach((elem) => {
     let elemHTML = `
       <tr>
         <td>${elem.date}</td>
@@ -235,7 +234,79 @@ function deleteBtn(id) {
   localStorage.setItem(`${key}`, JSON.stringify(data));
   updateCards();
   renderCards();
-  renderAllTransactions();
+  renderAllTransactions(data);
 }
 
 // search and filter
+
+const searchFilterElem = document.querySelector(".js-search-filter");
+const selectFilterElem = document.querySelector(".js-select-filter");
+const secondSearchFilterElem = document.querySelector(".js-search-filter-second");
+const secondSelectFilterElem = document.querySelector(".js-select-filter-second");
+
+function getFilteredData(searchFilter, selectFilter) {
+  const query = searchFilter.value.trim().toLowerCase();
+  const type = selectFilter.value;
+
+  return data.filter((elem) => {
+    const matchesSearch = elem.description.toLowerCase().includes(query) || elem.category.toLowerCase().includes(query);
+
+    const matchesType = type === "all" || elem.type === type;
+
+    return matchesSearch && matchesType;
+  });
+}
+
+function applyFilters() {
+  const filtered = getFilteredData(searchFilterElem, selectFilterElem);
+  updateCards();
+  renderCards();
+  renderAllTransactions(filtered);
+  secondSearchFilterElem.value = searchFilterElem.value;
+  secondSelectFilterElem.value = selectFilterElem.value;
+}
+function secondApplyFilters() {
+  const filtered = getFilteredData(secondSearchFilterElem, secondSelectFilterElem);
+  updateCards();
+  renderCards();
+  renderAllTransactions(filtered);
+  searchFilterElem.value = secondSearchFilterElem.value;
+  selectFilterElem.value = secondSelectFilterElem.value;
+}
+
+searchFilterElem.addEventListener("input", applyFilters);
+selectFilterElem.addEventListener("change", applyFilters);
+secondSearchFilterElem.addEventListener("input", secondApplyFilters);
+secondSelectFilterElem.addEventListener("change", secondApplyFilters);
+
+// here we go on settings
+
+const settingFullname = document.querySelector(".js-setting-fullname");
+const settingCurrency = document.querySelector("#settingCurrency");
+settingFullname.value = user.fullname;
+settingCurrency.value = user.currency;
+
+const settingSaveBtn = document.querySelector(".setting-save-btn");
+
+settingSaveBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  user.fullname = settingFullname.value.trim();
+  user.currency = settingCurrency.value;
+  localStorage.setItem("user", JSON.stringify(user));
+  navbarUsername.textContent = `${user.fullname}`;
+  updateCards();
+  renderCards();
+  renderAllTransactions(data);
+  updateResiteredUser(user.username,user.fullname)
+  alert("changes have been saved");
+});
+
+function updateResiteredUser(username, fullname) {
+  const users = JSON.parse(localStorage.getItem("registeredUsers"));
+  const userToUpdate = users.find((user) => user.username === username);
+  userToUpdate.fullname = fullname;
+  localStorage.setItem("registeredUsers", JSON.stringify(users));
+}
+
+

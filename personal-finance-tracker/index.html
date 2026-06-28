@@ -97,10 +97,10 @@
               <div class="filter">
                 <div class="search">
                   <i class="fa-solid fa-magnifying-glass"></i>
-                  <input type="text" placeholder="Search transactions..." />
+                  <input class="js-search-filter" type="text" placeholder="Search transactions..." />
                 </div>
 
-                <select name="filter-types" id="filter-types">
+                <select name="filter-types" class="js-select-filter" id="filter-types">
                   <option value="all">All Types</option>
                   <option value="income">Income Only</option>
                   <option value="expense">Expense Only</option>
@@ -156,10 +156,10 @@
             <div class="filter">
               <div class="search">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Search transactions..." />
+                <input class="js-search-filter-second" type="text" placeholder="Search transactions..." />
               </div>
 
-              <select name="filter-types" id="filter-types">
+              <select name="filter-types" class="js-select-filter-second" id="filter-types">
                 <option value="all">All Types</option>
                 <option value="income">Income Only</option>
                 <option value="expense">Expense Only</option>
@@ -197,7 +197,7 @@
                 <div class="form-row">
                   <div class="form-group">
                     <label for="fullname">Full Name</label>
-                    <input name="fullname" type="text" />
+                    <input class="js-setting-fullname" name="fullname" type="text" />
                   </div>
 
                   <div class="form-group">
@@ -212,7 +212,7 @@
                   </div>
                 </div>
 
-                <button class="save-btn" type="submit">Save Changes</button>
+                <button class="save-btn setting-save-btn" type="submit">Save Changes</button>
               </form>
             </div>
             <div></div>
