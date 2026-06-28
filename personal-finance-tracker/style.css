@@ -457,6 +457,11 @@ tbody tr:last-child td {
   cursor: pointer;
 }
 
+.all-transactions-content{
+  padding: 32px;
+  display: none;
+}
+
 .setting-content{
   padding: 32px;
   display: none;  /* change display to block to show setting*/
