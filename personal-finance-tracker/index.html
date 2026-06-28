@@ -8,11 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body>
+  <body class="">
     <div class="main">
       <div class="side-bar">
         <div class="company">
-          <div>
+          <div class="company-icon">
             <i class="bi bi-stack"></i>
           </div>
           <div>
@@ -88,39 +88,51 @@
             </div>
           </div>
 
-          <div class="dashboard-grid">
-            <div class="all-transactions">
-              <div class="header">
-                <h3>All Transactions</h3>
-              </div>
-
-              <div class="filter">
-                <div class="search">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                  <input class="js-search-filter" type="text" placeholder="Search transactions..." />
+          <div class="char-grid">
+            <div class="chart-grid">
+              <div class="card chart-card">
+                <div class="card-header">
+                  <h3>Cash Flow Analysis</h3>
                 </div>
-
-                <select name="filter-types" class="js-select-filter" id="filter-types">
-                  <option value="all">All Types</option>
-                  <option value="income">Income Only</option>
-                  <option value="expense">Expense Only</option>
-                </select>
+                <div class="chart-area">
+                  <canvas id="cashFlowChart"></canvas>
+                </div>
               </div>
+              <div class="dashboard-grid">
+                <div class="all-transactions">
+                  <div class="header">
+                    <h3>All Transactions</h3>
+                  </div>
 
-              <table>
-                <thead>
-                  <tr>
-                    <th>DATE</th>
-                    <th>DESCRIPTION</th>
-                    <th>CATEGORY</th>
-                    <th>AMOUNT</th>
-                    <th>ACTIONS</th>
-                  </tr>
-                </thead>
-                <tbody class="js-tbody">
-                  <!-- here are all transaction render by js  -->
-                </tbody>
-              </table>
+                  <div class="filter">
+                    <div class="search">
+                      <i class="fa-solid fa-magnifying-glass"></i>
+                      <input class="js-search-filter" type="text" placeholder="Search transactions..." />
+                    </div>
+
+                    <select name="filter-types" class="js-select-filter" id="filter-types">
+                      <option value="all">All Types</option>
+                      <option value="income">Income Only</option>
+                      <option value="expense">Expense Only</option>
+                    </select>
+                  </div>
+
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>DATE</th>
+                        <th>DESCRIPTION</th>
+                        <th>CATEGORY</th>
+                        <th>AMOUNT</th>
+                        <th>ACTIONS</th>
+                      </tr>
+                    </thead>
+                    <tbody class="js-tbody">
+                      <!-- here are all transaction render by js  -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
 
             <div class="preferences">
@@ -138,7 +150,7 @@
 
               <div class="delete-all-div">
                 <h4>Delete All</h4>
-                <button>
+                <button class="js-delete-all-btn">
                   <i class="fa-solid fa-trash"></i>
                   Reset All Data
                 </button>
@@ -177,8 +189,8 @@
                 </tr>
               </thead>
               <tbody class="js-tbody-second">
-                  <!-- here are all transaction render by js  -->
-                </tbody>
+                <!-- here are all transaction render by js  -->
+              </tbody>
             </table>
           </div>
         </div>
@@ -245,7 +257,7 @@
           <div class="form-row">
             <div class="form-group">
               <label for="amount">Amount</label>
-              <input class="amount" type="number" required />
+              <input class="amount" type="number" placeholder="0.00" required />
             </div>
 
             <div class="form-group">
@@ -274,6 +286,7 @@
       </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

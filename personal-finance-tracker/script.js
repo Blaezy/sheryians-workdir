@@ -8,12 +8,20 @@ if (currentPage === "index.html") {
   }
 }
 
-// some default document need to be top are here
+// some variables need to be top to work
 
 const allTransactionsHTML = document.querySelector(".js-tbody");
 const allTransactionsHTMLSecond = document.querySelector(".js-tbody-second");
 const transactionForm = document.querySelector(".transaction-form");
 const formHeader = document.querySelector(".js-form-header");
+let cashFlowChart;
+let currentBalance = 0;
+let totalIncome = 0;
+let totalExpense = 0;
+let totalTransaction = 0;
+
+let isNegative = false;
+let absValue = 0;
 
 // here is the sidebar buttons
 
@@ -88,6 +96,7 @@ let key = `transaction_${user.username}`;
 let data = JSON.parse(localStorage.getItem(key)) || [];
 
 renderAllTransactions(data);
+renderChart(data);
 
 // taking input all the transaction data
 
@@ -124,17 +133,19 @@ saveBtn.addEventListener("click", (e) => {
   if (editIndex != -1) {
     data[editIndex] = newData;
     localStorage.setItem(`${key}`, JSON.stringify(data));
-    updateCards();
+    updateCards(data);
     renderCards();
     renderAllTransactions(data);
+    renderChart(data);
     formHeader.innerHTML = "Add Transaction";
     editIndex = -1;
   } else {
     data.push(newData);
     localStorage.setItem(`${key}`, JSON.stringify(data));
-    updateCards();
+    updateCards(data);
     renderCards();
     renderAllTransactions(data);
+    renderChart(data);
   }
 
   transactionForm.reset();
@@ -148,19 +159,11 @@ const totalIncomeElem = document.querySelector(".js-total-income");
 const totalExpenseElem = document.querySelector(".js-total-expense");
 const totalTransactionElem = document.querySelector(".js-total-transaction");
 
-let currentBalance = 0;
-let totalIncome = 0;
-let totalExpense = 0;
-let totalTransaction = 0;
-
-let isNegative = false;
-let absValue = 0;
-
-function updateCards() {
+function updateCards(updateData) {
   currentBalance = 0;
   totalIncome = 0;
   totalExpense = 0;
-  data.forEach((element) => {
+  updateData.forEach((element) => {
     if (element.type == "expense") {
       currentBalance -= element.amount;
       totalExpense += element.amount;
@@ -181,7 +184,7 @@ function renderCards() {
   totalExpenseElem.innerHTML = `<span>${user.currency}</span>${totalExpense.toFixed(2)}`;
   totalTransactionElem.innerHTML = `${totalTransaction}`;
 }
-updateCards();
+updateCards(data);
 renderCards();
 
 // renderning all transactions
@@ -232,9 +235,10 @@ function deleteBtn(id) {
 
   data.splice(transactionIndex, 1);
   localStorage.setItem(`${key}`, JSON.stringify(data));
-  updateCards();
+  updateCards(data);
   renderCards();
   renderAllTransactions(data);
+  renderChart(data);
 }
 
 // search and filter
@@ -259,17 +263,19 @@ function getFilteredData(searchFilter, selectFilter) {
 
 function applyFilters() {
   const filtered = getFilteredData(searchFilterElem, selectFilterElem);
-  updateCards();
+  updateCards(filtered);
   renderCards();
   renderAllTransactions(filtered);
+  renderChart(data);
   secondSearchFilterElem.value = searchFilterElem.value;
   secondSelectFilterElem.value = selectFilterElem.value;
 }
 function secondApplyFilters() {
   const filtered = getFilteredData(secondSearchFilterElem, secondSelectFilterElem);
-  updateCards();
+  updateCards(filtered);
   renderCards();
   renderAllTransactions(filtered);
+  renderChart(data);
   searchFilterElem.value = secondSearchFilterElem.value;
   selectFilterElem.value = secondSelectFilterElem.value;
 }
@@ -295,10 +301,11 @@ settingSaveBtn.addEventListener("click", (e) => {
   user.currency = settingCurrency.value;
   localStorage.setItem("user", JSON.stringify(user));
   navbarUsername.textContent = `${user.fullname}`;
-  updateCards();
+  updateCards(data);
   renderCards();
   renderAllTransactions(data);
-  updateResiteredUser(user.username,user.fullname)
+  renderChart(data);
+  updateResiteredUser(user.username, user.fullname);
   alert("changes have been saved");
 });
 
@@ -309,4 +316,98 @@ function updateResiteredUser(username, fullname) {
   localStorage.setItem("registeredUsers", JSON.stringify(users));
 }
 
+//  here is the chart preparation
+function getCSSVar(name) {
+  return getComputedStyle(document.body).getPropertyValue(name).trim();
+}
 
+function renderChart(transactions) {
+  const ctx = document.getElementById("cashFlowChart").getContext("2d");
+
+  const textColor = getCSSVar("--text-dark");
+  const mutedColor = getCSSVar("--text-muted");
+  const gridColor = getCSSVar("--border-color");
+
+  if (cashFlowChart) {
+    cashFlowChart.data.datasets[0].data = [totalIncome];
+    cashFlowChart.data.datasets[1].data = [totalExpense];
+    cashFlowChart.options.plugins.legend.labels.color = textColor;
+    cashFlowChart.options.scales.y.ticks.color = mutedColor;
+    cashFlowChart.options.scales.y.grid.color = gridColor;
+    cashFlowChart.options.scales.x.ticks.color = mutedColor;
+    cashFlowChart.update();
+    return;
+  }
+
+  cashFlowChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["Income vs Expenses"],
+      datasets: [
+        { label: "Income", data: [totalIncome], backgroundColor: "#1e6b3e", borderRadius: 4, barPercentage: 0.5 },
+        { label: "Expenses", data: [totalExpense], backgroundColor: "#8b1e1e", borderRadius: 4, barPercentage: 0.5 },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: "top",
+          align: "center",
+          labels: { boxWidth: 18, boxHeight: 12, color: textColor, font: { size: 13 } },
+        },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { color: mutedColor, callback: (v) => v.toLocaleString() },
+          grid: { color: gridColor },
+        },
+        x: {
+          grid: { display: false },
+          ticks: { color: mutedColor },
+        },
+      },
+    },
+  });
+}
+
+renderChart(data);
+
+//  here is the preferances
+
+const toggleTrack = document.querySelector(".js-toggle-track");
+const toggleThumb = document.querySelector(".js-toggle-thumb");
+const body = document.body;
+
+let isDarkMode = localStorage.getItem("theme") === "Dark";
+
+setTheme(isDarkMode);
+
+function setTheme(dark) {
+  toggleThumb.classList.toggle("active", dark);
+  body.classList.toggle("dark-mode", dark);
+  localStorage.setItem("theme", dark ? "Dark" : "Light");
+  renderChart(data);
+}
+
+toggleTrack.addEventListener("click", () => {
+  isDarkMode = !isDarkMode;
+  setTheme(isDarkMode);
+});
+
+const deleteAllBtn = document.querySelector(".js-delete-all-btn");
+
+deleteAllBtn.addEventListener("click", () => {
+  const isConfirmed = confirm("Are you sure you want to delete all transactions? This cannot be undone.");
+
+  if (!isConfirmed) return;
+
+  data = [];
+  localStorage.setItem(`${key}`, JSON.stringify(data));
+  updateCards(data);
+  renderCards();
+  renderAllTransactions(data);
+  renderChart(data);
+});
