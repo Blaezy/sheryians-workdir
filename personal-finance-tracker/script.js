@@ -11,8 +11,6 @@ if (isIndexPage) {
 }
 
 function initApp() {
-  // some variables need to be top to work
-
   const allTransactionsHTML = document.querySelector(".js-tbody");
   const allTransactionsHTMLSecond = document.querySelector(".js-tbody-second");
   const transactionForm = document.querySelector(".transaction-form");
@@ -26,8 +24,7 @@ function initApp() {
   let isNegative = false;
   let absValue = 0;
 
-  // here is the sidebar buttons
-
+  // sidebar buttons
   const dashboard = document.querySelector(".dashboard");
   const allTransactionSidebar = document.querySelector(".sidebar-all-transaction");
   const setting = document.querySelector(".setting");
@@ -81,8 +78,7 @@ function initApp() {
     modalOverlay.style.display = "none";
   });
 
-  // here are the navbar element
-
+  // navbar
   const navbarUsername = document.querySelector(".user-name");
   navbarUsername.textContent = `${user.fullname}`;
 
@@ -92,17 +88,14 @@ function initApp() {
     window.location.replace("login.html");
   });
 
-  // here is the transanctions data
-
+  // transactions data
   let key = `transaction_${user.username}`;
-
   let data = JSON.parse(localStorage.getItem(key)) || [];
 
   renderAllTransactions(data);
   renderChart(data);
 
-  // taking input all the transaction data
-
+  // form inputs
   const transactionType = document.querySelector("#transaction-type");
   const descriptionInp = document.querySelector(".description");
   const amountInp = document.querySelector(".amount");
@@ -135,7 +128,7 @@ function initApp() {
 
     if (editIndex != -1) {
       data[editIndex] = newData;
-      localStorage.setItem(`${key}`, JSON.stringify(data));
+      localStorage.setItem(key, JSON.stringify(data));
       updateCards(data);
       renderCards();
       renderAllTransactions(data);
@@ -144,7 +137,7 @@ function initApp() {
       editIndex = -1;
     } else {
       data.push(newData);
-      localStorage.setItem(`${key}`, JSON.stringify(data));
+      localStorage.setItem(key, JSON.stringify(data));
       updateCards(data);
       renderCards();
       renderAllTransactions(data);
@@ -155,8 +148,7 @@ function initApp() {
     modalOverlay.style.display = "none";
   });
 
-  // updating and rendering the overview cards
-
+  // overview cards
   const currentBalanceElem = document.querySelector(".js-current-balance");
   const totalIncomeElem = document.querySelector(".js-total-income");
   const totalExpenseElem = document.querySelector(".js-total-expense");
@@ -190,8 +182,7 @@ function initApp() {
   updateCards(data);
   renderCards();
 
-  // renderning all transactions
-
+  // render transactions (now uses data-id + data-action instead of inline onclick)
   function renderAllTransactions(renderData) {
     allTransactionsHTML.innerHTML = "";
     allTransactionsHTMLSecond.innerHTML = "";
@@ -203,8 +194,8 @@ function initApp() {
         <td><span class="tag">${elem.category}</span></td>
         <td class="${elem.type === "income" ? "text-green" : "text-red"}">${elem.type === "income" ? "+" : "-"}${user.currency}${elem.amount.toFixed(2)}</td>
         <td>
-          <button class="action-btn btn-edit" onclick="editBtn('${elem.id}')"><i class="fa-solid fa-pen"></i></button>
-          <button class="action-btn btn-delete" onclick="deleteBtn('${elem.id}')"><i class="fa-solid fa-trash"></i></button>
+          <button class="action-btn btn-edit" data-id="${elem.id}" data-action="edit"><i class="fa-solid fa-pen"></i></button>
+          <button class="action-btn btn-delete" data-id="${elem.id}" data-action="delete"><i class="fa-solid fa-trash"></i></button>
         </td>
       </tr>
     `;
@@ -213,39 +204,42 @@ function initApp() {
     });
   }
 
-  // edit and delete the transactions
+  // edit/delete handled via event delegation, fully inside initApp scope
+  function handleTableClick(e) {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+    const id = btn.dataset.id;
 
-  function editBtn(id) {
-    let transactionElem = data.find((elem) => elem.id === id);
-    let transactionIndex = data.findIndex((elem) => elem.id === id);
-    editIndex = transactionIndex;
+    if (btn.dataset.action === "edit") {
+      let transactionElem = data.find((elem) => elem.id === id);
+      editIndex = data.findIndex((elem) => elem.id === id);
 
-    modalOverlay.style.display = "flex";
-    if (editIndex != -1) {
-      formHeader.innerHTML = "Edit Transaction";
+      modalOverlay.style.display = "flex";
+      if (editIndex != -1) {
+        formHeader.innerHTML = "Edit Transaction";
+        transactionType.value = transactionElem.type;
+        descriptionInp.value = transactionElem.description;
+        amountInp.value = transactionElem.amount;
+        categoryInp.value = transactionElem.category;
+        dateInp.value = transactionElem.date;
+      }
+    }
 
-      transactionType.value = transactionElem.type;
-      descriptionInp.value = transactionElem.description;
-      amountInp.value = transactionElem.amount;
-      categoryInp.value = transactionElem.category;
-      dateInp.value = transactionElem.date;
+    if (btn.dataset.action === "delete") {
+      const transactionIndex = data.findIndex((elem) => elem.id === id);
+      data.splice(transactionIndex, 1);
+      localStorage.setItem(key, JSON.stringify(data));
+      updateCards(data);
+      renderCards();
+      renderAllTransactions(data);
+      renderChart(data);
     }
   }
 
-  function deleteBtn(id) {
-    let transactionElem = data.find((elem) => elem.id === id);
-    let transactionIndex = data.findIndex((elem) => elem.id === id);
-
-    data.splice(transactionIndex, 1);
-    localStorage.setItem(`${key}`, JSON.stringify(data));
-    updateCards(data);
-    renderCards();
-    renderAllTransactions(data);
-    renderChart(data);
-  }
+  allTransactionsHTML.addEventListener("click", handleTableClick);
+  allTransactionsHTMLSecond.addEventListener("click", handleTableClick);
 
   // search and filter
-
   const searchFilterElem = document.querySelector(".js-search-filter");
   const selectFilterElem = document.querySelector(".js-select-filter");
   const secondSearchFilterElem = document.querySelector(".js-search-filter-second");
@@ -258,9 +252,7 @@ function initApp() {
     return data.filter((elem) => {
       const matchesSearch =
         elem.description.toLowerCase().includes(query) || elem.category.toLowerCase().includes(query);
-
       const matchesType = type === "all" || elem.type === type;
-
       return matchesSearch && matchesType;
     });
   }
@@ -289,8 +281,7 @@ function initApp() {
   secondSearchFilterElem.addEventListener("input", secondApplyFilters);
   secondSelectFilterElem.addEventListener("change", secondApplyFilters);
 
-  // here we go on settings
-
+  // settings
   const settingFullname = document.querySelector(".js-setting-fullname");
   const settingCurrency = document.querySelector("#settingCurrency");
   settingFullname.value = user.fullname;
@@ -320,18 +311,18 @@ function initApp() {
 
   function updateResiteredUser(username, fullname) {
     const users = JSON.parse(localStorage.getItem("registeredUsers"));
-    const userToUpdate = users.find((user) => user.username === username);
+    const userToUpdate = users.find((u) => u.username === username);
     userToUpdate.fullname = fullname;
     localStorage.setItem("registeredUsers", JSON.stringify(users));
   }
   function updateResiteredCurrency(username, currency) {
     const users = JSON.parse(localStorage.getItem("registeredUsers"));
-    const userToUpdate = users.find((user) => user.username === username);
+    const userToUpdate = users.find((u) => u.username === username);
     userToUpdate.currency = currency;
     localStorage.setItem("registeredUsers", JSON.stringify(users));
   }
 
-  //  here is the chart preparation
+  // chart
   function getCSSVar(name) {
     return getComputedStyle(document.body).getPropertyValue(name).trim();
   }
@@ -390,8 +381,7 @@ function initApp() {
 
   renderChart(data);
 
-  //  here is the preferances
-
+  // preferences
   const toggleTrack = document.querySelector(".js-toggle-track");
   const toggleThumb = document.querySelector(".js-toggle-thumb");
   const body = document.body;
@@ -416,11 +406,10 @@ function initApp() {
 
   deleteAllBtn.addEventListener("click", () => {
     const isConfirmed = confirm("Are you sure you want to delete all transactions? This cannot be undone.");
-
     if (!isConfirmed) return;
 
     data = [];
-    localStorage.setItem(`${key}`, JSON.stringify(data));
+    localStorage.setItem(key, JSON.stringify(data));
     updateCards(data);
     renderCards();
     renderAllTransactions(data);
@@ -433,132 +422,26 @@ function initApp() {
     const isConfirmed = confirm(
       "This will remove your current transactions and add 15 sample transactions for testing. Continue?",
     );
-
     if (!isConfirmed) return;
 
     data = [
-      {
-        id: crypto.randomUUID(),
-        type: "income",
-        description: "Salary",
-        amount: 52000,
-        date: "2026-06-01",
-        category: "Salary",
-      },
-      {
-        id: crypto.randomUUID(),
-        type: "expense",
-        description: "Big Bazaar groceries",
-        amount: 1850,
-        date: "2026-06-02",
-        category: "Food & Dining",
-      },
-      {
-        id: crypto.randomUUID(),
-        type: "expense",
-        description: "Petrol fill-up",
-        amount: 1100,
-        date: "2026-06-04",
-        category: "Petrol & Auto",
-      },
-      {
-        id: crypto.randomUUID(),
-        type: "expense",
-        description: "Netflix subscription",
-        amount: 199,
-        date: "2026-06-05",
-        category: "Entertainment",
-      },
-      {
-        id: crypto.randomUUID(),
-        type: "expense",
-        description: "Electricity bill",
-        amount: 1320,
-        date: "2026-06-07",
-        category: "Utilities",
-      },
-      {
-        id: crypto.randomUUID(),
-        type: "income",
-        description: "Freelance logo design",
-        amount: 6000,
-        date: "2026-06-09",
-        category: "Other",
-      },
-      {
-        id: crypto.randomUUID(),
-        type: "expense",
-        description: "Myntra order",
-        amount: 2750,
-        date: "2026-06-11",
-        category: "Shopping",
-      },
-      {
-        id: crypto.randomUUID(),
-        type: "expense",
-        description: "Jio recharge",
-        amount: 399,
-        date: "2026-06-13",
-        category: "Recharge & Bills",
-      },
-      {
-        id: crypto.randomUUID(),
-        type: "expense",
-        description: "Movie tickets",
-        amount: 540,
-        date: "2026-06-15",
-        category: "Entertainment",
-      },
-      {
-        id: crypto.randomUUID(),
-        type: "expense",
-        description: "Zomato dinner",
-        amount: 620,
-        date: "2026-06-17",
-        category: "Food & Dining",
-      },
-      {
-        id: crypto.randomUUID(),
-        type: "income",
-        description: "Stock dividend",
-        amount: 1500,
-        date: "2026-06-19",
-        category: "Other",
-      },
-      {
-        id: crypto.randomUUID(),
-        type: "expense",
-        description: "Uber rides",
-        amount: 480,
-        date: "2026-06-21",
-        category: "Petrol & Auto",
-      },
-      {
-        id: crypto.randomUUID(),
-        type: "expense",
-        description: "Gym membership",
-        amount: 1200,
-        date: "2026-06-23",
-        category: "Utilities",
-      },
-      {
-        id: crypto.randomUUID(),
-        type: "expense",
-        description: "Amazon - headphones",
-        amount: 3499,
-        date: "2026-06-25",
-        category: "Shopping",
-      },
-      {
-        id: crypto.randomUUID(),
-        type: "income",
-        description: "Cashback reward",
-        amount: 250,
-        date: "2026-06-27",
-        category: "Other",
-      },
+      { id: crypto.randomUUID(), type: "income", description: "Salary", amount: 52000, date: "2026-06-01", category: "Salary" },
+      { id: crypto.randomUUID(), type: "expense", description: "Big Bazaar groceries", amount: 1850, date: "2026-06-02", category: "Food & Dining" },
+      { id: crypto.randomUUID(), type: "expense", description: "Petrol fill-up", amount: 1100, date: "2026-06-04", category: "Petrol & Auto" },
+      { id: crypto.randomUUID(), type: "expense", description: "Netflix subscription", amount: 199, date: "2026-06-05", category: "Entertainment" },
+      { id: crypto.randomUUID(), type: "expense", description: "Electricity bill", amount: 1320, date: "2026-06-07", category: "Utilities" },
+      { id: crypto.randomUUID(), type: "income", description: "Freelance logo design", amount: 6000, date: "2026-06-09", category: "Other" },
+      { id: crypto.randomUUID(), type: "expense", description: "Myntra order", amount: 2750, date: "2026-06-11", category: "Shopping" },
+      { id: crypto.randomUUID(), type: "expense", description: "Jio recharge", amount: 399, date: "2026-06-13", category: "Recharge & Bills" },
+      { id: crypto.randomUUID(), type: "expense", description: "Movie tickets", amount: 540, date: "2026-06-15", category: "Entertainment" },
+      { id: crypto.randomUUID(), type: "expense", description: "Zomato dinner", amount: 620, date: "2026-06-17", category: "Food & Dining" },
+      { id: crypto.randomUUID(), type: "income", description: "Stock dividend", amount: 1500, date: "2026-06-19", category: "Other" },
+      { id: crypto.randomUUID(), type: "expense", description: "Uber rides", amount: 480, date: "2026-06-21", category: "Petrol & Auto" },
+      { id: crypto.randomUUID(), type: "expense", description: "Gym membership", amount: 1200, date: "2026-06-23", category: "Utilities" },
+      { id: crypto.randomUUID(), type: "expense", description: "Amazon - headphones", amount: 3499, date: "2026-06-25", category: "Shopping" },
+      { id: crypto.randomUUID(), type: "income", description: "Cashback reward", amount: 250, date: "2026-06-27", category: "Other" },
     ];
-    localStorage.setItem(`${key}`, JSON.stringify(data));
+    localStorage.setItem(key, JSON.stringify(data));
     updateCards(data);
     renderCards();
     renderAllTransactions(data);
