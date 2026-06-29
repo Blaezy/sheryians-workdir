@@ -1,11 +1,8 @@
-const currentPage = window.location.pathname.split("/").pop();
-
 let registeredUsers = JSON.parse(localStorage.getItem("registeredUsers")) || [];
 
 const registerUsername = document.querySelector(".register-username");
 const registerPassword = document.querySelector(".register-password");
 const registerBtn = document.querySelector(".register-btn");
-
 
 registerBtn.addEventListener("click", (e) => {
   e.preventDefault();

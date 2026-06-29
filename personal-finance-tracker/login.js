@@ -1,5 +1,3 @@
-const currentPage = window.location.pathname.split("/").pop();
-
 let registeredUsers = JSON.parse(localStorage.getItem("registeredUsers")) || [];
 
 const loginUsernameInp = document.querySelector(".login-username");
