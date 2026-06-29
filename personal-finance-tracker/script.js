@@ -182,7 +182,7 @@ function initApp() {
   updateCards(data);
   renderCards();
 
-  // render transactions (now uses data-id + data-action instead of inline onclick)
+  // render transactions 
   function renderAllTransactions(renderData) {
     allTransactionsHTML.innerHTML = "";
     allTransactionsHTMLSecond.innerHTML = "";
@@ -204,7 +204,7 @@ function initApp() {
     });
   }
 
-  // edit/delete handled via event delegation, fully inside initApp scope
+  // edit/delete handled 
   function handleTableClick(e) {
     const btn = e.target.closest("button");
     if (!btn) return;
