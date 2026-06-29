@@ -506,6 +506,27 @@ tbody tr:last-child td {
   padding: 8px 16px;
   cursor: pointer;
 }
+.sample-div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-color);
+  gap: 12px;
+}
+.sample-div h4 {
+  font-size: 15px;
+}
+.sample-div button {
+  width: 100%;
+  background-color: var(--green-light);
+  color: var(--green-text);
+  border: 1px solid var(--green-text);
+  border-radius: 6px;
+  font-weight: 600;
+  padding: 8px 16px;
+  cursor: pointer;
+}
 
 .all-transactions-content {
   padding: 32px;

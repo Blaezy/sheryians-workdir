@@ -172,8 +172,8 @@ function updateCards(updateData) {
       currentBalance += element.amount;
       totalIncome += element.amount;
     }
-    totalTransaction = data.length;
   });
+  totalTransaction = updateData.length;
   isNegative = currentBalance < 0;
   absValue = Math.abs(currentBalance).toFixed(2);
 }
@@ -306,6 +306,11 @@ settingSaveBtn.addEventListener("click", (e) => {
   renderAllTransactions(data);
   renderChart(data);
   updateResiteredUser(user.username, user.fullname);
+  updateResiteredCurrency(user.username, user.currency);
+  secondSearchFilterElem.value = "";
+  secondSelectFilterElem.value = "all";
+  searchFilterElem.value = "";
+  selectFilterElem.value = "all";
   alert("changes have been saved");
 });
 
@@ -313,6 +318,12 @@ function updateResiteredUser(username, fullname) {
   const users = JSON.parse(localStorage.getItem("registeredUsers"));
   const userToUpdate = users.find((user) => user.username === username);
   userToUpdate.fullname = fullname;
+  localStorage.setItem("registeredUsers", JSON.stringify(users));
+}
+function updateResiteredCurrency(username, currency) {
+  const users = JSON.parse(localStorage.getItem("registeredUsers"));
+  const userToUpdate = users.find((user) => user.username === username);
+  userToUpdate.currency = currency;
   localStorage.setItem("registeredUsers", JSON.stringify(users));
 }
 
@@ -405,6 +416,37 @@ deleteAllBtn.addEventListener("click", () => {
   if (!isConfirmed) return;
 
   data = [];
+  localStorage.setItem(`${key}`, JSON.stringify(data));
+  updateCards(data);
+  renderCards();
+  renderAllTransactions(data);
+  renderChart(data);
+});
+
+const sampleBtn = document.querySelector(".js-sample-btn");
+
+sampleBtn.addEventListener("click", () => {
+  const isConfirmed = confirm("This will remove your current transactions and add 15 sample transactions for testing. Continue?");
+
+  if (!isConfirmed) return;
+
+  data = [
+    { id: crypto.randomUUID(), type: "income", description: "Salary", amount: 52000, date: "2026-06-01", category: "Salary" },
+    { id: crypto.randomUUID(), type: "expense", description: "Big Bazaar groceries", amount: 1850, date: "2026-06-02", category: "Food & Dining" },
+    { id: crypto.randomUUID(), type: "expense", description: "Petrol fill-up", amount: 1100, date: "2026-06-04", category: "Petrol & Auto" },
+    { id: crypto.randomUUID(), type: "expense", description: "Netflix subscription", amount: 199, date: "2026-06-05", category: "Entertainment" },
+    { id: crypto.randomUUID(), type: "expense", description: "Electricity bill", amount: 1320, date: "2026-06-07", category: "Utilities" },
+    { id: crypto.randomUUID(), type: "income", description: "Freelance logo design", amount: 6000, date: "2026-06-09", category: "Other" },
+    { id: crypto.randomUUID(), type: "expense", description: "Myntra order", amount: 2750, date: "2026-06-11", category: "Shopping" },
+    { id: crypto.randomUUID(), type: "expense", description: "Jio recharge", amount: 399, date: "2026-06-13", category: "Recharge & Bills" },
+    { id: crypto.randomUUID(), type: "expense", description: "Movie tickets", amount: 540, date: "2026-06-15", category: "Entertainment" },
+    { id: crypto.randomUUID(), type: "expense", description: "Zomato dinner", amount: 620, date: "2026-06-17", category: "Food & Dining" },
+    { id: crypto.randomUUID(), type: "income", description: "Stock dividend", amount: 1500, date: "2026-06-19", category: "Other" },
+    { id: crypto.randomUUID(), type: "expense", description: "Uber rides", amount: 480, date: "2026-06-21", category: "Petrol & Auto" },
+    { id: crypto.randomUUID(), type: "expense", description: "Gym membership", amount: 1200, date: "2026-06-23", category: "Utilities" },
+    { id: crypto.randomUUID(), type: "expense", description: "Amazon - headphones", amount: 3499, date: "2026-06-25", category: "Shopping" },
+    { id: crypto.randomUUID(), type: "income", description: "Cashback reward", amount: 250, date: "2026-06-27", category: "Other" },
+  ];
   localStorage.setItem(`${key}`, JSON.stringify(data));
   updateCards(data);
   renderCards();
